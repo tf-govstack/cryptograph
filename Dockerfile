@@ -35,9 +35,9 @@ ENV artifactory_url_env=${artifactory_url}
 # change volume to whichever storage directory you want to use for this container.
 VOLUME /home/logs /home/Glowroot
 
-COPY ./target/print-*.jar print.jar
+COPY ./target/cryptograph-*.jar cryptograph.jar
 
-EXPOSE 8099
+EXPOSE 9099
 
 CMD if [ "$is_glowroot_env" = "present" ]; then \
     wget "${artifactory_url_env}"/artifactory/libs-release-local/io/mosip/testing/glowroot.zip ; \
@@ -45,12 +45,12 @@ CMD if [ "$is_glowroot_env" = "present" ]; then \
     unzip glowroot.zip ; \
     rm -rf glowroot.zip ; \
 
-    sed -i 's/<service_name>/print/g' glowroot/glowroot.properties ; \
-    java -jar -javaagent:glowroot/glowroot.jar -Dspring.cloud.config.label="${spring_config_label_env}" -Dspring.profiles.active="${active_profile_env}" -Dspring.cloud.config.uri="${spring_config_url_env}" print.jar ; \
+    sed -i 's/<service_name>/cryptograph/g' glowroot/glowroot.properties ; \
+    java -jar -javaagent:glowroot/glowroot.jar -Dspring.cloud.config.label="${spring_config_label_env}" -Dspring.profiles.active="${active_profile_env}" -Dspring.cloud.config.uri="${spring_config_url_env}" cryptograph.jar ; \
     else \
  
-    java -jar -Dspring.cloud.config.label="${spring_config_label_env}" -Dspring.profiles.active="${active_profile_env}" -Dspring.cloud.config.uri="${spring_config_url_env}" print.jar ; \
+    java -jar -Dspring.cloud.config.label="${spring_config_label_env}" -Dspring.profiles.active="${active_profile_env}" -Dspring.cloud.config.uri="${spring_config_url_env}" cryptograph.jar ; \
     fi
 
-#CMD ["java","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-Dspring.cloud.config.uri=${spring_config_url_env}","-jar","-javaagent:/home/Glowroot/glowroot.jar","print.jar"]
+#CMD ["java","-Dspring.cloud.config.label=${spring_config_label_env}","-Dspring.profiles.active=${active_profile_env}","-Dspring.cloud.config.uri=${spring_config_url_env}","-jar","-javaagent:/home/Glowroot/glowroot.jar","cryptograph.jar"]
 

@@ -8,10 +8,10 @@
 		<version>2.0.2.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>io.mosip.print</groupId>
-	<artifactId>print</artifactId>
+	<groupId>io.mosip.tf.t5.cryptograph</groupId>
+	<artifactId>cryptograph</artifactId>
 	<version>1.1.4</version>
-	<name>print</name>
+	<name>cryptograph</name>
 
 	<properties>
 		<java.version>11</java.version>
@@ -49,14 +49,21 @@
 	</properties>
 
 	<dependencies>
-		<!--  <dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jdbc</artifactId>
-		</dependency>-->
-		<!--  <dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-security</artifactId>
-		</dependency>-->
+		 <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib</artifactId>
+            <version>1.3.70</version>
+        </dependency>        
+		<dependency>
+		    <groupId>com.squareup.retrofit2</groupId>
+		    <artifactId>retrofit</artifactId>
+		    <version>2.3.0</version>
+		</dependency>  
+		<dependency>  
+		    <groupId>com.squareup.retrofit2</groupId>
+		    <artifactId>converter-gson</artifactId>
+		    <version>2.3.0</version>
+		</dependency> 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
