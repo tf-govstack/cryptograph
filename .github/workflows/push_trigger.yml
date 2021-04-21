@@ -114,8 +114,8 @@ jobs:
 
     runs-on: ubuntu-latest
     env:
-      NAMESPACE: ${{ secrets.dev_namespace_docker_hub }}
-      SERVICE_NAME: print
+      NAMESPACE: 06f41a0441
+      SERVICE_NAME: cryptograph
       SERVICE_LOCATION: print
 
     steps:
