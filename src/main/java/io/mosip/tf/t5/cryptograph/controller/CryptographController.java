@@ -49,7 +49,7 @@ public class CryptographController {
 	 * @throws RegPrintAppException the reg print app exception
 	 */
 	@PostMapping(path = "/callback/notifyPrint", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthenticateContentAndVerifyIntent(secret = "${mosip.event.secret}", callback = "/v1/print/print/callback/notifyPrint", topic = "${mosip.event.topic}")
+	//@PreAuthenticateContentAndVerifyIntent(secret = "${mosip.event.secret}", callback = "/v1/print/print/callback/notifyPrint", topic = "${mosip.event.topic}")
 	public ResponseEntity<String> handleSubscribeEvent(@RequestBody EventModel eventModel) throws Exception {
 		String credential = eventModel.getEvent().getData().get("credential").toString();
 		String ecryptionPin = eventModel.getEvent().getData().get("protectionKey").toString();
@@ -61,7 +61,7 @@ public class CryptographController {
 				eventModel.getEvent().getData().get("credentialType").toString(), ecryptionPin,
 				eventModel.getEvent().getTransactionId(),
 				getSignature(sign, credential), "UIN", false);				
-		return new ResponseEntity<>("successfully sent to genereate cryptograph", HttpStatus.OK);
+		return new ResponseEntity<>("successfully sent to genereate cryptograph. After successful generation you will get mail", HttpStatus.OK);
 
 	}
 

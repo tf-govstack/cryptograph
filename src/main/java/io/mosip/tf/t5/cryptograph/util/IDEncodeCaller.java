@@ -12,8 +12,12 @@ import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
 
+import io.mosip.tf.t5.cryptograph.constant.IdType;
 import io.mosip.tf.t5.cryptograph.model.BarCodeResponse;
+import io.mosip.tf.t5.cryptograph.model.BarcodeParams;
+import io.mosip.tf.t5.cryptograph.model.BarcodeTitle;
 import io.mosip.tf.t5.cryptograph.model.EmailParam;
+import io.mosip.tf.t5.cryptograph.model.FaceParam;
 import io.mosip.tf.t5.cryptograph.model.Pipeline;
 import net.logstash.logback.encoder.org.apache.commons.lang3.StringUtils;
 import okhttp3.MultipartBody;
@@ -24,21 +28,44 @@ import retrofit2.Response;
 @Service
 public class IDEncodeCaller {
 	
-	public void uploadData(Map<String, Object> demoAttributes, Map<String, Object> bioAttributes) {
+	public void uploadData(Map<String, Object> demoAttributes, Map<String, byte[]> bioAttributes) {
 		ArrayList<MultipartBody.Part> parts = new ArrayList<>();
 		parts.add(Utilities.byteArrayToMultipartFile("demog", getDemoAttributesAsString(demoAttributes).getBytes(),
 				"demo.json", "application/octet-stream"));
 		Pipeline pipeline = new Pipeline();
-		 EmailParam emailParams = new EmailParam();
-	        emailParams.setEmailTol("nagarjunabtechece@gmail.com");
-	        emailParams.subject = "Your Tech5 IDencode";	        
-	        pipeline.setEmailParams(emailParams);
-		for (Map.Entry<String,Object> e : bioAttributes.entrySet()) {
-			parts.add(Utilities.byteArrayToMultipartFile(e.getKey().toString(), e.getValue().toString().getBytes(), e.getKey().toString() +".template", "application/octet-stream"));			
+	    EmailParam emailSender = new EmailParam();
+	    emailSender.setEmailto("nagarjunabtechece@gmail.com");
+	    emailSender.subject = "Your Tech5 IDencode";	        
+	    pipeline.setEmailSender(emailSender);
+	    FaceParam faceParams = new FaceParam();
+	    faceParams.setCompressionLevel(1);
+	    faceParams.setFaceDetectorConfidence(0.6f);
+	    faceParams.setFaceSelectorAlg(1);
+	    faceParams.setPerformCompression(true);
+	    faceParams.setPerformTemplateExtraction(true);
+	    pipeline.setFacePipeline(faceParams);
+	    
+	    BarcodeParams par = new BarcodeParams();
+	    par.setBlockCols(0);
+	    par.setBlockRows(0);
+	    par.setErrorCorrection(0);
+	    par.setGridSize(3);
+	    par.setThickness(1);
+	    BarcodeTitle title = new BarcodeTitle();
+	    title.setAlignment("center");
+	    title.setLocation("bottom");
+	    title.setOffset(10);
+	    title.setText(demoAttributes.get(IdType.UIN.toString()).toString());	    
+	    par.setTitle(title);
+	    
+	    pipeline.setBarcodeGenerationParameters(par);
+	    for (Map.Entry<String,byte[]> e : bioAttributes.entrySet()) {
+			parts.add(Utilities.byteArrayToMultipartFile(e.getKey().toString(), e.getValue(), e.getKey().toString() +".png", "image/png"));			
 	    }
 
 		String pipelineJson = new Gson().toJson(pipeline);
 		parts.add(Utilities.byteArrayToMultipartFile("pipeline", pipelineJson.getBytes(), "pipeline.json", "application/json"));
+		writeToFile("D://pileline.json",pipelineJson.getBytes());
 		
         if(parts.size()> 0) {
         	T5Service service = RetrofitClientInstance.getRetrofitInstance().create(T5Service.class);
