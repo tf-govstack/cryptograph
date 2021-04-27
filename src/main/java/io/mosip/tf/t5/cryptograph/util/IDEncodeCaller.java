@@ -4,14 +4,17 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
 
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.tf.t5.cryptograph.constant.IdType;
 import io.mosip.tf.t5.cryptograph.model.BarCodeResponse;
 import io.mosip.tf.t5.cryptograph.model.BarcodeParams;
@@ -24,9 +27,13 @@ import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import zipkin2.internal.DateUtil;
 
 @Service
 public class IDEncodeCaller {
+	
+	@Value("${mosip.primary-language}")
+	private String primaryLang;
 	
 	public void uploadData(Map<String, Object> demoAttributes, Map<String, byte[]> bioAttributes) {
 		ArrayList<MultipartBody.Part> parts = new ArrayList<>();
@@ -48,9 +55,9 @@ public class IDEncodeCaller {
 	    BarcodeParams par = new BarcodeParams();
 	    par.setBlockCols(0);
 	    par.setBlockRows(0);
-	    par.setErrorCorrection(0);
-	    par.setGridSize(3);
-	    par.setThickness(1);
+	    par.setErrorCorrection(8);
+	    par.setGridSize(8);
+	    par.setThickness(2);
 	    BarcodeTitle title = new BarcodeTitle();
 	    title.setAlignment("center");
 	    title.setLocation("bottom");
@@ -99,8 +106,18 @@ public class IDEncodeCaller {
         }        
 	}
 
-	private String getDemoAttributesAsString(Map<String, Object> demoAttributes) {
-		return StringUtils.join(demoAttributes);
+	private String getDemoAttributesAsString(Map<String, Object> demoAttributes) {		
+		String fullName = (String) demoAttributes.get("fullName");
+		String dob = (String) demoAttributes.get("dateOfBirth");
+		String email = (String) demoAttributes.get("email");
+		String gender = (String) demoAttributes.get("gender_" + primaryLang);
+		String uin = demoAttributes.get(IdType.UIN.toString()).toString();
+		String requiredString = fullName + "," + dob + "," + "," + email + "," + gender + "," + "," + ","
+				+ DateUtils.getUTCCurrentDateTime().format(DateTimeFormatter.ISO_LOCAL_DATE) + "," + "validity = "
+				+ DateUtils.getUTCCurrentDateTime().plusYears(1).format(DateTimeFormatter.ISO_LOCAL_DATE) + "," + uin;
+		writeToFile("D://requiredString.json",requiredString.getBytes());
+		return requiredString;
+		
 	}
 	
 	private void writeToFile(String fineName, byte[] data) {				
