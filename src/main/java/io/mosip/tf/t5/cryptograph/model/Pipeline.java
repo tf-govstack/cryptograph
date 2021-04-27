@@ -20,8 +20,8 @@ public class Pipeline implements Serializable{
     
     private BarcodeParams barcodeGenerationParameters;
     
-    private EmailParam emailParams;
+    private EmailParam emailSender;
     
-    private FingerParam fingerParams;
+    private FingerParam fingerPipelines;
 
 }

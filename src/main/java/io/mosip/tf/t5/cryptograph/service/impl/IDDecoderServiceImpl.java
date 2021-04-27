@@ -1,5 +1,8 @@
 package io.mosip.tf.t5.cryptograph.service.impl;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -7,11 +10,15 @@ import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReadParam;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -23,6 +30,7 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.github.jaiimageio.jpeg2000.impl.J2KImageReader;
 
 import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -44,7 +52,6 @@ import io.mosip.tf.t5.cryptograph.logger.CryptographLogger;
 import io.mosip.tf.t5.cryptograph.logger.LogDescription;
 import io.mosip.tf.t5.cryptograph.service.IDDecoderService;
 import io.mosip.tf.t5.cryptograph.service.RestClientService;
-import io.mosip.tf.t5.cryptograph.util.CbeffToBiometricUtil;
 import io.mosip.tf.t5.cryptograph.util.IDEncodeCaller;
 import io.mosip.tf.t5.cryptograph.util.JsonUtil;
 import io.mosip.tf.t5.cryptograph.util.Utilities;
@@ -53,10 +60,7 @@ import io.mosip.tf.t5.http.ResponseWrapper;
 
 @Service
 public class IDDecoderServiceImpl implements IDDecoderService {
-
-//	@Autowired
-//	private WebSubSubscriptionHelper webSubSubscriptionHelper;
-
+	
 	@Autowired
 	private IDEncodeCaller enrollDataUpload;
 
@@ -98,42 +102,8 @@ public class IDDecoderServiceImpl implements IDDecoderService {
 	@Autowired
 	private RestClientService<Object> restClientService;
 
-	/** The registration status service. */
-	// @Autowired
-	// RegistrationStatusService<String, InternalRegistrationStatusDto,
-	// RegistrationStatusDto> registrationStatusService;
-
-	/** The Constant VID_CREATE_ID. */
-	public static final String VID_CREATE_ID = "registration.processor.id.repo.generate";
-
-	/** The Constant REG_PROC_APPLICATION_VERSION. */
-	public static final String REG_PROC_APPLICATION_VERSION = "registration.processor.id.repo.vidVersion";
-
-	/** The Constant DATETIME_PATTERN. */
-	public static final String DATETIME_PATTERN = "mosip.print.datetime.pattern";
-
-	public static final String VID_TYPE = "registration.processor.id.repo.vidType";
-
-	/** The cbeffutil. */
 	@Autowired
 	private CbeffUtil cbeffutil;
-
-//	@Autowired
-//	private PublisherClient<String, Object, HttpHeaders> pb;
-
-	@Value("${mosip.datashare.partner.id}")
-	private String partnerId;
-
-	@Value("${mosip.datashare.policy.id}")
-	private String policyId;
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.print.service.PrintService#
-	 * getDocuments(io.mosip.registration.processor.core.constant.IdType,
-	 * java.lang.String, java.lang.String, boolean)
-	 */
 
 	@Override
 	public void getDocuments(String credential, String credentialType, String encryptionPin, String requestId,
@@ -147,7 +117,7 @@ public class IDDecoderServiceImpl implements IDDecoderService {
 		LogDescription description = new LogDescription();
 		String individualBio = null;
 		Map<String, Object> demoAttributes = new LinkedHashMap<>();
-		Map<String, Object> bioAttributes = new LinkedHashMap<>();
+		Map<String, byte[]> bioAttributes = new LinkedHashMap<>();
 		try {
 			credentialSubject = getCrdentialSubject(credential);
 			org.json.JSONObject credentialSubjectJson = new org.json.JSONObject(credentialSubject);
@@ -155,7 +125,7 @@ public class IDDecoderServiceImpl implements IDDecoderService {
 			individualBio = decryptedJson.getString("biometrics");
 			String individualBiometric = new String(individualBio);
 			uin = decryptedJson.getString("UIN");
-			boolean isPhotoSet = setApplicantPhoto(individualBiometric, bioAttributes);
+			boolean isPhotoSet = extractBiometrics(individualBiometric, bioAttributes);
 			if (!isPhotoSet) {
 				printLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 						uin, PlatformErrorMessages.PRT_PRT_APPLICANT_PHOTO_NOT_SET.name());
@@ -185,59 +155,60 @@ public class IDDecoderServiceImpl implements IDDecoderService {
 	 * @return true, if successful
 	 * @throws Exception the exception
 	 */
-	private boolean setApplicantPhoto(String individualBio, Map<String, Object> attributes) throws Exception {
-		String value = individualBio;
-		boolean isPhotoSet = false;
+	private boolean extractBiometrics(String individualBio, Map<String, byte[]> attributes) throws Exception {
+		String value = individualBio;	
 
-		if (value != null) {
-			CbeffToBiometricUtil util = new CbeffToBiometricUtil(cbeffutil);
-			List<String> subtype = new ArrayList<>();
-			byte[] photoByte = util.getImageBytes(value, FACE, subtype);
-			if (photoByte != null) {
-				attributes.put("face_template", photoByte);
+		if (value != null) {			
+			Map<String, String> bdbBasedOnFace = cbeffutil.getBDBBasedOnType(CryptoUtil.decodeBase64(value), FACE,
+					null);
+			for (Entry<String, String> iterable_element : bdbBasedOnFace.entrySet()) {
+				attributes.put("face_image", convertToJPG(iterable_element.getValue()));
 			}
+			
 			Map<String, String> bdbBasedOnFinger = cbeffutil.getBDBBasedOnType(CryptoUtil.decodeBase64(value), "Finger",
 					null);
 			for (Entry<String, String> iterable_element : bdbBasedOnFinger.entrySet()) {
 				String[] str = iterable_element.getKey().split("_");
 				if (str[1].equalsIgnoreCase("Right Thumb")) {
-					attributes.put("finger_template_r1", iterable_element.getValue());
+					attributes.put("finger_image_r1", convertToJPG(iterable_element.getValue()));
 				}
 				if (str[1].equalsIgnoreCase("Right IndexFinger")) {
-					attributes.put("finger_template_r2", iterable_element.getValue());
+					attributes.put("finger_image_r2", convertToJPG(iterable_element.getValue()));
 				}
-				if (str[1].equalsIgnoreCase("Right MiddleFinger")) {
-					attributes.put("finger_template_r3", iterable_element.getValue());
-				}
-				if (str[1].equalsIgnoreCase("Right RingFinger")) {
-					attributes.put("finger_template_r4", iterable_element.getValue());
-				}
-				if (str[1].equalsIgnoreCase("Right LittleFinger")) {
-					attributes.put("finger_template_r5", iterable_element.getValue());
-				}
+//				if (str[1].equalsIgnoreCase("Right MiddleFinger")) {
+//					attributes.put("finger_image_r3", convertToJPG(iterable_element.getValue()));
+//				}
+//				if (str[1].equalsIgnoreCase("Right RingFinger")) {
+//					attributes.put("finger_image_r4", convertToJPG(iterable_element.getValue()));
+//				}
+//				if (str[1].equalsIgnoreCase("Right LittleFinger")) {
+//					attributes.put("finger_image_r5", convertToJPG(iterable_element.getValue()));
+//				}
 				if (str[1].equalsIgnoreCase("Left Thumb")) {
-					attributes.put("finger_template_l1", iterable_element.getValue());
+					attributes.put("finger_image_l1", convertToJPG(iterable_element.getValue()));
 				}
 				if (str[1].equalsIgnoreCase("Left IndexFinger")) {
-					attributes.put("finger_template_l2", iterable_element.getValue());
+					attributes.put("finger_image_l2", convertToJPG(iterable_element.getValue()));
 				}
-				if (str[1].equalsIgnoreCase("Left MiddleFinger")) {
-					attributes.put("finger_template_l3", iterable_element.getValue());
-				}
-				if (str[1].equalsIgnoreCase("Left RingFinger")) {
-					attributes.put("finger_template_l4", iterable_element.getValue());
-				}
-				if (str[1].equalsIgnoreCase("Left LittleFinger")) {
-					attributes.put("finger_template_l5", iterable_element.getValue());
-				}
+//				if (str[1].equalsIgnoreCase("Left MiddleFinger")) {
+//					attributes.put("finger_image_l3", convertToJPG(iterable_element.getValue()));
+//				}
+//				if (str[1].equalsIgnoreCase("Left RingFinger")) {
+//					attributes.put("finger_image_l4", convertToJPG(iterable_element.getValue()));
+//				}
+//				if (str[1].equalsIgnoreCase("Left LittleFinger")) {
+//					attributes.put("finger_image_l5", convertToJPG(iterable_element.getValue()));
+//				}
 			}
 		}
 
-		for (Entry<String, Object> iterable_element : attributes.entrySet()) {
-			writeToFile("D://" + iterable_element.getKey(), iterable_element.getValue().toString());
+		for (Entry<String, byte[]> iterable_element : attributes.entrySet()) {
+			writeToFile("D://" + iterable_element.getKey()+".png", iterable_element.getValue());
 		}
-		attributes.remove("face_template_print");
-		return isPhotoSet;
+		if(attributes.size()> 0){
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -364,6 +335,66 @@ public class IDDecoderServiceImpl implements IDDecoderService {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+	}	
+	
+	/**
+	 * 
+	 * @param isoTemplate
+	 * @return
+	 */
+	private byte[] convertToJPG(String isoTemplate) {		
+		byte[] inputFileBytes = CryptoUtil.decodeBase64(isoTemplate);
+		int index;
+		for (index = 0; index < inputFileBytes.length; index++) {
+			if ((char) inputFileBytes[index] == 'j' && (char) inputFileBytes[index + 1] == 'P') {
+				break;
+			}
+		}
+		try {
+			return convertToJPG(Arrays.copyOfRange(inputFileBytes, index - 4, inputFileBytes.length), "image");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
+	
+	/**
+	 * 
+	 * @param jp2Data
+	 * @param fileName
+	 * @return
+	 * @throws IOException
+	 */
+	private byte[] convertToJPG(byte[] jp2Data, String fileName) throws IOException {
+		J2KImageReader j2kImageReader = new J2KImageReader(null);
+		j2kImageReader.setInput(ImageIO.createImageInputStream(new ByteArrayInputStream(jp2Data)));
+		ImageReadParam imageReadParam = j2kImageReader.getDefaultReadParam();
+		BufferedImage image = j2kImageReader.read(0, imageReadParam);
+		ByteArrayOutputStream imgBytes = new ByteArrayOutputStream();
+		ImageIO.write(image, "PNG", imgBytes);
+		byte[] jpgImg = imgBytes.toByteArray();
+		writeToFile("D://decodedjpgimage.png" , jpgImg);
+		return jpgImg;
+	}
+	
+	/**
+	 * 
+	 * @param fineName
+	 * @param data
+	 */
+	private void writeToFile(String fineName, byte[] data) {				
+		try {
+			  File pdfFile = new File(
+					 fineName
+					  ); 
+					  OutputStream os = new FileOutputStream(pdfFile); 
+					  os.write(data);
+					  os.close();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+}
 
 }

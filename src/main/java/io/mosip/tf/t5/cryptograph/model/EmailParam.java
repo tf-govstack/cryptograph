@@ -16,7 +16,7 @@ public class EmailParam implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	public String emailTol;
+	public String emailto;
 	
 	public String subject;
 }

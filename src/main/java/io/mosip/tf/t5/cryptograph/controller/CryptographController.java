@@ -61,7 +61,7 @@ public class CryptographController {
 				eventModel.getEvent().getData().get("credentialType").toString(), ecryptionPin,
 				eventModel.getEvent().getTransactionId(),
 				getSignature(sign, credential), "UIN", false);				
-		return new ResponseEntity<>("successfully sent to genereate cryptograph", HttpStatus.OK);
+		return new ResponseEntity<>("successfully sent to genereate cryptograph. After successful generation you will get mail", HttpStatus.OK);
 
 	}
 
