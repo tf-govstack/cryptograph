@@ -4,9 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -60,7 +58,7 @@ import io.mosip.tf.t5.http.ResponseWrapper;
 
 @Service
 public class IDDecoderServiceImpl implements IDDecoderService {
-	
+
 	@Autowired
 	private IDEncodeCaller enrollDataUpload;
 
@@ -156,15 +154,15 @@ public class IDDecoderServiceImpl implements IDDecoderService {
 	 * @throws Exception the exception
 	 */
 	private boolean extractBiometrics(String individualBio, Map<String, byte[]> attributes) throws Exception {
-		String value = individualBio;	
+		String value = individualBio;
 
-		if (value != null) {			
+		if (value != null) {
 			Map<String, String> bdbBasedOnFace = cbeffutil.getBDBBasedOnType(CryptoUtil.decodeBase64(value), FACE,
 					null);
 			for (Entry<String, String> iterable_element : bdbBasedOnFace.entrySet()) {
 				attributes.put("face_image", convertToJPG(iterable_element.getValue()));
 			}
-			
+
 			Map<String, String> bdbBasedOnFinger = cbeffutil.getBDBBasedOnType(CryptoUtil.decodeBase64(value), "Finger",
 					null);
 			for (Entry<String, String> iterable_element : bdbBasedOnFinger.entrySet()) {
@@ -202,10 +200,7 @@ public class IDDecoderServiceImpl implements IDDecoderService {
 			}
 		}
 
-		for (Entry<String, byte[]> iterable_element : attributes.entrySet()) {
-			writeToFile("D://" + iterable_element.getKey()+".png", iterable_element.getValue());
-		}
-		if(attributes.size()> 0){
+		if (attributes.size() > 0) {
 			return true;
 		}
 		return false;
@@ -325,24 +320,12 @@ public class IDDecoderServiceImpl implements IDDecoderService {
 		return data;
 	}
 
-	private void writeToFile(String fineName, String data) {
-		try {
-			File pdfFile = new File(fineName);
-			OutputStream os = new FileOutputStream(pdfFile);
-			os.write(data.getBytes());
-			os.close();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-	}	
-	
 	/**
 	 * 
 	 * @param isoTemplate
 	 * @return
 	 */
-	private byte[] convertToJPG(String isoTemplate) {		
+	private byte[] convertToJPG(String isoTemplate) {
 		byte[] inputFileBytes = CryptoUtil.decodeBase64(isoTemplate);
 		int index;
 		for (index = 0; index < inputFileBytes.length; index++) {
@@ -358,7 +341,7 @@ public class IDDecoderServiceImpl implements IDDecoderService {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * 
 	 * @param jp2Data
@@ -374,27 +357,6 @@ public class IDDecoderServiceImpl implements IDDecoderService {
 		ByteArrayOutputStream imgBytes = new ByteArrayOutputStream();
 		ImageIO.write(image, "PNG", imgBytes);
 		byte[] jpgImg = imgBytes.toByteArray();
-		writeToFile("D://decodedjpgimage.png" , jpgImg);
 		return jpgImg;
 	}
-	
-	/**
-	 * 
-	 * @param fineName
-	 * @param data
-	 */
-	private void writeToFile(String fineName, byte[] data) {				
-		try {
-			  File pdfFile = new File(
-					 fineName
-					  ); 
-					  OutputStream os = new FileOutputStream(pdfFile); 
-					  os.write(data);
-					  os.close();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-}
-
 }
