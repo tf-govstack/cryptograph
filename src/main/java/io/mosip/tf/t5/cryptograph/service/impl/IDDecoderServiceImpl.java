@@ -36,6 +36,7 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.pdfgenerator.exception.PDFGeneratorException;
 import io.mosip.kernel.core.util.CryptoUtil;
+import io.mosip.kernel.logger.logback.factory.Logfactory;
 import io.mosip.kernel.pdfgenerator.itext.constant.PDFGeneratorExceptionCodeConstant;
 import io.mosip.tf.t5.cryptograph.constant.IdType;
 import io.mosip.tf.t5.cryptograph.constant.LoggerFileConstant;
@@ -92,6 +93,8 @@ public class IDDecoderServiceImpl implements IDDecoderService {
 
 	/** The reg proc logger. */
 	private static Logger printLogger = CryptographLogger.getLogger(IDDecoderServiceImpl.class);
+	
+	private Logger log = Logfactory.getSlf4jLogger(IDDecoderServiceImpl.class);
 
 	/** The utilities. */
 	@Autowired
@@ -357,15 +360,15 @@ public class IDDecoderServiceImpl implements IDDecoderService {
 		BufferedImage image = j2kImageReader.read(0, imageReadParam);
 		int height = image.getHeight();
 		int width = image.getWidth();
-		String faceImageBytes = image.toString();
-		printLogger.error("", "", "", "OriginalFaceImage " + faceImageBytes + "END OF OriginalFaceImage");
-		printLogger.info("", "", "", "image upscaling to width :" + 2 * width + "height"+  2 * height);
+		String faceImageBytes = image.toString();		
+		log.error("", "", "", "OriginalFaceImage " + faceImageBytes + "END OF OriginalFaceImage");
+		log.info("", "", "", "image upscaling to width :" + 2 * width + "height"+  2 * height);
 		BufferedImage outputImage = new BufferedImage(2 * width, 2 * height, BufferedImage.TYPE_INT_RGB);		
 		ByteArrayOutputStream imgBytes = new ByteArrayOutputStream();
 		ImageIO.write(outputImage, "PNG", imgBytes);
-		printLogger.error("", "", "", "UpscaledImage " + outputImage + "END OF UpscaledImage");
+		log.error("", "", "", "UpscaledImage " + outputImage + "END OF UpscaledImage");
 		byte[] jpgImg = imgBytes.toByteArray();
-		printLogger.info("", "", "", "image upscaling done to width :" + 2 * width + "height"+  2 * height);
+		log.info("", "", "", "image upscaling done to width :" + 2 * width + "height"+  2 * height);
 		return jpgImg;
 	}
 }
