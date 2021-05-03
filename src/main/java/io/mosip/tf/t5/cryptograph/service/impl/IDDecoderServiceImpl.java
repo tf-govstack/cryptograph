@@ -1,5 +1,6 @@
 package io.mosip.tf.t5.cryptograph.service.impl;
 
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -354,8 +355,11 @@ public class IDDecoderServiceImpl implements IDDecoderService {
 		j2kImageReader.setInput(ImageIO.createImageInputStream(new ByteArrayInputStream(jp2Data)));
 		ImageReadParam imageReadParam = j2kImageReader.getDefaultReadParam();
 		BufferedImage image = j2kImageReader.read(0, imageReadParam);
+		int height = image.getHeight();
+		int width = image.getWidth();
+		BufferedImage outputImage = new BufferedImage(2 * width, 2 * height, BufferedImage.TYPE_INT_RGB);
 		ByteArrayOutputStream imgBytes = new ByteArrayOutputStream();
-		ImageIO.write(image, "PNG", imgBytes);
+		ImageIO.write(outputImage, "PNG", imgBytes);
 		byte[] jpgImg = imgBytes.toByteArray();
 		return jpgImg;
 	}
