@@ -356,11 +356,13 @@ public class IDDecoderServiceImpl implements IDDecoderService {
 		ImageReadParam imageReadParam = j2kImageReader.getDefaultReadParam();
 		BufferedImage image = j2kImageReader.read(0, imageReadParam);
 		int height = image.getHeight();
-		int width = image.getWidth();
-		BufferedImage outputImage = new BufferedImage(2 * width, 2 * height, BufferedImage.TYPE_INT_RGB);
+		int width = image.getWidth();		
+		printLogger.info("", "", "", "image upscaling to width :" + 2 * width + "height"+  2 * height);
+		BufferedImage outputImage = new BufferedImage(2 * width, 2 * height, BufferedImage.TYPE_INT_RGB);		
 		ByteArrayOutputStream imgBytes = new ByteArrayOutputStream();
 		ImageIO.write(outputImage, "PNG", imgBytes);
 		byte[] jpgImg = imgBytes.toByteArray();
+		printLogger.info("", "", "", "image upscaling done to width :" + 2 * width + "height"+  2 * height);
 		return jpgImg;
 	}
 }
