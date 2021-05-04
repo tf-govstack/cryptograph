@@ -185,12 +185,12 @@ public class IDDecoderServiceImpl implements IDDecoderService {
 					null);
 			for (Entry<String, String> iterable_element : bdbBasedOnFinger.entrySet()) {
 				String[] str = iterable_element.getKey().split("_");
-//				if (str[1].equalsIgnoreCase("Right Thumb")) {
-//					attributes.put("finger_image_r1", convertToJPG(iterable_element.getValue()));
-//				}
-//				if (str[1].equalsIgnoreCase("Right IndexFinger")) {
-//					attributes.put("finger_image_r2", convertToJPG(iterable_element.getValue()));
-//				}
+				if (str[1].equalsIgnoreCase("Right Thumb")) {
+					attributes.put("finger_image_r1", convertToJPG(iterable_element.getValue()));
+				}
+				if (str[1].equalsIgnoreCase("Right IndexFinger")) {
+					attributes.put("finger_image_r2", convertToJPG(iterable_element.getValue()));
+				}
 //				if (str[1].equalsIgnoreCase("Right MiddleFinger")) {
 //					attributes.put("finger_image_r3", convertToJPG(iterable_element.getValue()));
 //				}
@@ -200,12 +200,12 @@ public class IDDecoderServiceImpl implements IDDecoderService {
 //				if (str[1].equalsIgnoreCase("Right LittleFinger")) {
 //					attributes.put("finger_image_r5", convertToJPG(iterable_element.getValue()));
 //				}
-//				if (str[1].equalsIgnoreCase("Left Thumb")) {
-//					attributes.put("finger_image_l1", convertToJPG(iterable_element.getValue()));
-//				}
-//				if (str[1].equalsIgnoreCase("Left IndexFinger")) {
-//					attributes.put("finger_image_l2", convertToJPG(iterable_element.getValue()));
-//				}
+				if (str[1].equalsIgnoreCase("Left Thumb")) {
+					attributes.put("finger_image_l1", convertToJPG(iterable_element.getValue()));
+				}
+				if (str[1].equalsIgnoreCase("Left IndexFinger")) {
+					attributes.put("finger_image_l2", convertToJPG(iterable_element.getValue()));
+				}
 //				if (str[1].equalsIgnoreCase("Left MiddleFinger")) {
 //					attributes.put("finger_image_l3", convertToJPG(iterable_element.getValue()));
 //				}
