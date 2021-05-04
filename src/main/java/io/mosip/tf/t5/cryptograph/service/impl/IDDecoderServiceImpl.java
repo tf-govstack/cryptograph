@@ -122,9 +122,17 @@ public class IDDecoderServiceImpl implements IDDecoderService {
 		Map<String, byte[]> bioAttributes = new LinkedHashMap<>();
 		try {
 			credentialSubject = getCrdentialSubject(credential);
+			printLogger.error(LoggerFileConstant.SESSIONID.toString(), "credentialSubject", "",
+					credentialSubject);
 			org.json.JSONObject credentialSubjectJson = new org.json.JSONObject(credentialSubject);
+			printLogger.error(LoggerFileConstant.SESSIONID.toString(), "credentialSubjectJson", "",
+					credentialSubjectJson.toString());
 			org.json.JSONObject decryptedJson = decryptAttribute(credentialSubjectJson, encryptionPin, credential);
+			printLogger.error(LoggerFileConstant.SESSIONID.toString(), "decryptedJson", "",
+					decryptedJson.toString());
 			individualBio = decryptedJson.getString("biometrics");
+			printLogger.error(LoggerFileConstant.SESSIONID.toString(), "individualBio", "",
+					individualBio);
 			String individualBiometric = new String(individualBio);
 			uin = decryptedJson.getString("UIN");
 			boolean isPhotoSet = extractBiometrics(individualBiometric, bioAttributes);
