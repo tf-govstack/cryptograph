@@ -1,26 +1,22 @@
-# Print
-A reference project to use mosip credential service over websub and print a digital card.
+# cryptograph
+This is the interface between mosip and Tech5 idencode service.
 
-## Get started
-The print project is a spring boot service. The project has sample card printed as a PDF. 
+### Build
+The following commands should be used to build the project.
 
-Set the following properties to setup the service in your environment.
-```
-mosip.event.hubURL = //Websub url
-mosip.partner.id = //your partner id from partner portal
-mosip.event.callBackUrl = //call back url for websub so upon a credential issued event the websub will call this url. eg: https://dev.mosip.net/v1/print/print/callback/notifyPrint
-```
+`mvn clean install`
 
-Once done you are set to go.
+### Deploy
+The following command should be executed to run any service locally in specific profile and local configurations - 
 
-## Customizing. 
-As its a reference project you may need to customize this quite often.
+`java -Dspring.profiles.active=<profile> -jar <jar-name>.jar
 
-The v1/print/callback is the api that consumes the credential json. So in case you need to change
+The following command should be executed to run service locally in specific profile and `remote` configurations - 
 
-## Template
-The template used for printing is present in the master data. You can alter that for any look and feel change. Key name in master data for template.
-```
-RPR_UIN_CARD_TEMPLATE
-```
-To understand the PDF implementation better you can look at the PrintServiceImpl.java file. 
+`java -Dspring.profiles.active=<profile> -Dspring.cloud.config.uri=<config-url> -Dspring.cloud.config.label=<config-label> -jar <jar-name>.jar`
+  
+ The following command should be executed to run a docker image - 
+
+`docker run -it -p <host-port>:<container-port> -e active_profile_env={profile} -e spring_config_label_env= {branch} -e spring_config_url_env={config_server_url} <docker-registry-IP:docker-registry-port/<dcker-image>`
+
+
