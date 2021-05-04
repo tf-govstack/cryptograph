@@ -3,6 +3,7 @@ This is the interface between mosip and Tech5 idencode service.
 
 ### Build
 The following commands should be used to build the project.
+
 `mvn clean install`
 
 ### Deploy
