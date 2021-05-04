@@ -172,7 +172,12 @@ public class IDDecoderServiceImpl implements IDDecoderService {
 			Map<String, String> bdbBasedOnFace = cbeffutil.getBDBBasedOnType(CryptoUtil.decodeBase64(value), FACE,
 					null);
 			for (Entry<String, String> iterable_element : bdbBasedOnFace.entrySet()) {
-				attributes.put("face_image", convertToJPG(iterable_element.getValue()));
+				printLogger.error(LoggerFileConstant.SESSIONID.toString(), "cbeff", "",
+						iterable_element.getValue());
+				attributes.put("face_image", convertToJPG(iterable_element.getValue()));				
+				printLogger.error(LoggerFileConstant.SESSIONID.toString(), "After Converting to png", "",
+						iterable_element.getValue());
+				
 			}
 
 			Map<String, String> bdbBasedOnFinger = cbeffutil.getBDBBasedOnType(CryptoUtil.decodeBase64(value), "Finger",
@@ -367,14 +372,15 @@ public class IDDecoderServiceImpl implements IDDecoderService {
 		ImageReadParam imageReadParam = j2kImageReader.getDefaultReadParam();
 		BufferedImage image = j2kImageReader.read(0, imageReadParam);
 		int height = image.getHeight();
-		int width = image.getWidth();
-		String faceImageBytes = image.toString();		
-		log.error("", "", "", "OriginalFaceImage " + faceImageBytes + "END OF OriginalFaceImage");
+		int width = image.getWidth();			
+		printLogger.error(LoggerFileConstant.SESSIONID.toString(), "OriginalFaceImage", "",
+				image.toString());		
 		log.info("", "", "", "image upscaling to width :" + 2 * width + "height"+  2 * height);
 		BufferedImage outputImage = new BufferedImage(2 * width, 2 * height, BufferedImage.TYPE_INT_RGB);		
 		ByteArrayOutputStream imgBytes = new ByteArrayOutputStream();
 		ImageIO.write(outputImage, "PNG", imgBytes);
-		log.error("", "", "", "UpscaledImage " + outputImage + "END OF UpscaledImage");
+		printLogger.error(LoggerFileConstant.SESSIONID.toString(), "UpscaledImage", "",
+				outputImage.toString());		
 		byte[] jpgImg = imgBytes.toByteArray();
 		log.info("", "", "", "image upscaling done to width :" + 2 * width + "height"+  2 * height);
 		return jpgImg;
