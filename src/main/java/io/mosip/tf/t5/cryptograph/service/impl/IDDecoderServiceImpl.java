@@ -98,7 +98,7 @@ public class IDDecoderServiceImpl implements IDDecoderService {
 
 	/** The reg proc logger. */
 	private static Logger printLogger = CryptographLogger.getLogger(IDDecoderServiceImpl.class);
-	
+
 	private Logger log = Logfactory.getSlf4jLogger(IDDecoderServiceImpl.class);
 
 	/** The utilities. */
@@ -127,17 +127,14 @@ public class IDDecoderServiceImpl implements IDDecoderService {
 		Map<String, byte[]> bioAttributes = new LinkedHashMap<>();
 		try {
 			credentialSubject = getCrdentialSubject(credential);
-			printLogger.error(LoggerFileConstant.SESSIONID.toString(), "credentialSubject", "",
-					credentialSubject);
+			printLogger.error(LoggerFileConstant.SESSIONID.toString(), "credentialSubject", "", credentialSubject);
 			org.json.JSONObject credentialSubjectJson = new org.json.JSONObject(credentialSubject);
 			printLogger.error(LoggerFileConstant.SESSIONID.toString(), "credentialSubjectJson", "",
 					credentialSubjectJson.toString());
 			org.json.JSONObject decryptedJson = decryptAttribute(credentialSubjectJson, encryptionPin, credential);
-			printLogger.error(LoggerFileConstant.SESSIONID.toString(), "decryptedJson", "",
-					decryptedJson.toString());
-			individualBio = decryptedJson.getString("biometrics");	
-			printLogger.error(LoggerFileConstant.SESSIONID.toString(), "individualBio", "",
-					individualBio);
+			printLogger.error(LoggerFileConstant.SESSIONID.toString(), "decryptedJson", "", decryptedJson.toString());
+			individualBio = decryptedJson.getString("biometrics");
+			printLogger.error(LoggerFileConstant.SESSIONID.toString(), "individualBio", "", individualBio);
 			String individualBiometric = new String(individualBio);
 			uin = decryptedJson.getString("UIN");
 			boolean isPhotoSet = extractBiometrics(individualBiometric, bioAttributes);
@@ -177,12 +174,11 @@ public class IDDecoderServiceImpl implements IDDecoderService {
 			Map<String, String> bdbBasedOnFace = cbeffutil.getBDBBasedOnType(CryptoUtil.decodeBase64(value), FACE,
 					null);
 			for (Entry<String, String> iterable_element : bdbBasedOnFace.entrySet()) {
-				printLogger.error(LoggerFileConstant.SESSIONID.toString(), "cbeff", "",
-						iterable_element.getValue());
-				attributes.put("face_image", convertToJPG(iterable_element.getValue()));				
+				printLogger.error(LoggerFileConstant.SESSIONID.toString(), "cbeff", "", iterable_element.getValue());
+				attributes.put("face_image", convertToJPG(iterable_element.getValue()));
 				printLogger.error(LoggerFileConstant.SESSIONID.toString(), "After Converting to png", "",
 						iterable_element.getValue());
-				
+
 			}
 
 			Map<String, String> bdbBasedOnFinger = cbeffutil.getBDBBasedOnType(CryptoUtil.decodeBase64(value), "Finger",
@@ -379,56 +375,35 @@ public class IDDecoderServiceImpl implements IDDecoderService {
 		ImageReadParam imageReadParam = j2kImageReader.getDefaultReadParam();
 		BufferedImage image = j2kImageReader.read(0, imageReadParam);
 		ImageIO.write(image, "PNG", beforeUpScale);
-		writeToFile("D://beforerUpscale.png", beforeUpScale.toByteArray());
 		int height = image.getHeight();
-		int width = image.getWidth();			
-		printLogger.error(LoggerFileConstant.SESSIONID.toString(), "OriginalFaceImage", "",
-				image.toString());		
-		log.info("", "", "", "image upscaling to width :" + 2 * width + "height"+  2 * height);
-		//BufferedImage outputImage = new BufferedImage(2 * width, 2 * height, BufferedImage.TYPE_INT_RGB);		
-		
-		BufferedImage outputImage = createResizedCopy(image,2 * width, 2 * height,true);
-		ImageIO.write(outputImage, "PNG", afterUpScale);		
-		printLogger.error(LoggerFileConstant.SESSIONID.toString(), "UpscaledImage", "",
-				outputImage.toString());		
+		int width = image.getWidth();
+		printLogger.error(LoggerFileConstant.SESSIONID.toString(), "OriginalFaceImage", "", image.toString());
+		BufferedImage outputImage = createResizedCopy(image, 2 * width, 2 * height, true);
+		ImageIO.write(outputImage, "PNG", afterUpScale);
+		printLogger.error(LoggerFileConstant.SESSIONID.toString(), "UpscaledImage", "", outputImage.toString());
 		byte[] jpgImg = afterUpScale.toByteArray();
-		writeToFile("D://afterUpscale.png", afterUpScale.toByteArray());
-		log.info("", "", "", "image upscaling done to width :" + 2 * width + "height"+  2 * height);		
 		return jpgImg;
 	}
-	
-	BufferedImage createResizedCopy(Image originalImage, 
-            int scaledWidth, int scaledHeight, 
-            boolean preserveAlpha)
-    {
-        System.out.println("resizing...");
-        int imageType = preserveAlpha ? BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB;
-        BufferedImage scaledBI = new BufferedImage(scaledWidth, scaledHeight, imageType);
-        Graphics2D g = scaledBI.createGraphics();
-        if (preserveAlpha) {
-            g.setComposite(AlphaComposite.Src);
-        }
-        g.drawImage(originalImage, 0, 0, scaledWidth, scaledHeight, null); 
-        g.dispose();
-        return scaledBI;
-    }
-	
+
 	/**
 	 * 
-	 * @param fineName
-	 * @param data
+	 * @param originalImage
+	 * @param scaledWidth
+	 * @param scaledHeight
+	 * @param preserveAlpha
+	 * @return
 	 */
-	private void writeToFile(String fineName, byte[] data) {				
-		try {
-			  File pdfFile = new File(
-					 fineName
-					  ); 
-					  OutputStream os = new FileOutputStream(pdfFile); 
-					  os.write(data);
-					  os.close();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+	private BufferedImage createResizedCopy(Image originalImage, int scaledWidth, int scaledHeight,
+			boolean preserveAlpha) {
+		System.out.println("resizing...");
+		int imageType = preserveAlpha ? BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB;
+		BufferedImage scaledBI = new BufferedImage(scaledWidth, scaledHeight, imageType);
+		Graphics2D g = scaledBI.createGraphics();
+		if (preserveAlpha) {
+			g.setComposite(AlphaComposite.Src);
 		}
-}
+		g.drawImage(originalImage, 0, 0, scaledWidth, scaledHeight, null);
+		g.dispose();
+		return scaledBI;
+	}
 }
