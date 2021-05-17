@@ -53,7 +53,7 @@ jobs:
     env:
       NAMESPACE: 06f41a0441
       SERVICE_NAME: cryptograph
-      SERVICE_LOCATION: print
+      SERVICE_LOCATION: cryptograph
 
     steps:
       - uses: actions/checkout@v2
@@ -73,7 +73,7 @@ jobs:
           xml-file: /pom.xml 
           xpath: /*[local-name()="project"]/*[local-name()="version"] 
       
-      - name: Unzip and extract the print
+      - name: Unzip and extract the cryptograph
         run: unzip -uj "release.zip" "target/*" -d "target"
       
       - name: Build image
