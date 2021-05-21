@@ -7,9 +7,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -29,7 +27,6 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -41,7 +38,6 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.pdfgenerator.exception.PDFGeneratorException;
 import io.mosip.kernel.core.util.CryptoUtil;
-import io.mosip.kernel.logger.logback.factory.Logfactory;
 import io.mosip.kernel.pdfgenerator.itext.constant.PDFGeneratorExceptionCodeConstant;
 import io.mosip.tf.t5.cryptograph.constant.IdType;
 import io.mosip.tf.t5.cryptograph.constant.LoggerFileConstant;
@@ -81,25 +77,10 @@ public class IDDecoderServiceImpl implements IDDecoderService {
 
 	/** The secondary lang. */
 	@Value("${mosip.secondary-language}")
-	private String secondaryLang;
-
-	/** The un masked length. */
-	@Value("${registration.processor.unMaskedUin.length}")
-	private int unMaskedLength;
-
-	/** The uin length. */
-	@Value("${mosip.kernel.uin.length}")
-	private int uinLength;
-
-	@Value("${mosip.print.uin.header.length}")
-	private int headerLength;
-	/** The Constant FACE. */
-	private static final String FACE = "Face";
-
-	/** The reg proc logger. */
+	private String secondaryLang;	
+	
 	private static Logger printLogger = CryptographLogger.getLogger(IDDecoderServiceImpl.class);
-
-	private Logger log = Logfactory.getSlf4jLogger(IDDecoderServiceImpl.class);
+	
 
 	/** The utilities. */
 	@Autowired
@@ -171,14 +152,13 @@ public class IDDecoderServiceImpl implements IDDecoderService {
 		String value = individualBio;
 
 		if (value != null) {
-			Map<String, String> bdbBasedOnFace = cbeffutil.getBDBBasedOnType(CryptoUtil.decodeBase64(value), FACE,
+			Map<String, String> bdbBasedOnFace = cbeffutil.getBDBBasedOnType(CryptoUtil.decodeBase64(value), "Face",
 					null);
 			for (Entry<String, String> iterable_element : bdbBasedOnFace.entrySet()) {
 				printLogger.error(LoggerFileConstant.SESSIONID.toString(), "cbeff", "", iterable_element.getValue());
-				attributes.put("face_image", convertToJPG(iterable_element.getValue()));
+				attributes.put("face_image", convertToJPG(iterable_element.getValue(),true));
 				printLogger.error(LoggerFileConstant.SESSIONID.toString(), "After Converting to png", "",
 						iterable_element.getValue());
-
 			}
 
 			Map<String, String> bdbBasedOnFinger = cbeffutil.getBDBBasedOnType(CryptoUtil.decodeBase64(value), "Finger",
@@ -186,10 +166,10 @@ public class IDDecoderServiceImpl implements IDDecoderService {
 			for (Entry<String, String> iterable_element : bdbBasedOnFinger.entrySet()) {
 				String[] str = iterable_element.getKey().split("_");
 				if (str[1].equalsIgnoreCase("Right Thumb")) {
-					attributes.put("finger_image_r1", convertToJPG(iterable_element.getValue()));
+					attributes.put("finger_image_r1", convertToJPG(iterable_element.getValue(),false));
 				}
 				if (str[1].equalsIgnoreCase("Right IndexFinger")) {
-					attributes.put("finger_image_r2", convertToJPG(iterable_element.getValue()));
+					attributes.put("finger_image_r2", convertToJPG(iterable_element.getValue(),false));
 				}
 //				if (str[1].equalsIgnoreCase("Right MiddleFinger")) {
 //					attributes.put("finger_image_r3", convertToJPG(iterable_element.getValue()));
@@ -201,10 +181,10 @@ public class IDDecoderServiceImpl implements IDDecoderService {
 //					attributes.put("finger_image_r5", convertToJPG(iterable_element.getValue()));
 //				}
 				if (str[1].equalsIgnoreCase("Left Thumb")) {
-					attributes.put("finger_image_l1", convertToJPG(iterable_element.getValue()));
+					attributes.put("finger_image_l1", convertToJPG(iterable_element.getValue(),false));
 				}
 				if (str[1].equalsIgnoreCase("Left IndexFinger")) {
-					attributes.put("finger_image_l2", convertToJPG(iterable_element.getValue()));
+					attributes.put("finger_image_l2", convertToJPG(iterable_element.getValue(),false));
 				}
 //				if (str[1].equalsIgnoreCase("Left MiddleFinger")) {
 //					attributes.put("finger_image_l3", convertToJPG(iterable_element.getValue()));
@@ -343,7 +323,7 @@ public class IDDecoderServiceImpl implements IDDecoderService {
 	 * @param isoTemplate
 	 * @return
 	 */
-	private byte[] convertToJPG(String isoTemplate) {
+	private byte[] convertToJPG(String isoTemplate, boolean isFace) {
 		byte[] inputFileBytes = CryptoUtil.decodeBase64(isoTemplate);
 		int index;
 		for (index = 0; index < inputFileBytes.length; index++) {
@@ -352,7 +332,7 @@ public class IDDecoderServiceImpl implements IDDecoderService {
 			}
 		}
 		try {
-			return convertToJPG(Arrays.copyOfRange(inputFileBytes, index - 4, inputFileBytes.length), "image");
+			return convertToJPG(Arrays.copyOfRange(inputFileBytes, index - 4, inputFileBytes.length), "image", isFace);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -367,7 +347,7 @@ public class IDDecoderServiceImpl implements IDDecoderService {
 	 * @return
 	 * @throws IOException
 	 */
-	private byte[] convertToJPG(byte[] jp2Data, String fileName) throws IOException {
+	private byte[] convertToJPG(byte[] jp2Data, String fileName,boolean isFace) throws IOException {
 		ByteArrayOutputStream beforeUpScale = new ByteArrayOutputStream();
 		ByteArrayOutputStream afterUpScale = new ByteArrayOutputStream();
 		J2KImageReader j2kImageReader = new J2KImageReader(null);
@@ -375,6 +355,9 @@ public class IDDecoderServiceImpl implements IDDecoderService {
 		ImageReadParam imageReadParam = j2kImageReader.getDefaultReadParam();
 		BufferedImage image = j2kImageReader.read(0, imageReadParam);
 		ImageIO.write(image, "PNG", beforeUpScale);
+		if(!isFace) {
+			return beforeUpScale.toByteArray();
+		}
 		int height = image.getHeight();
 		int width = image.getWidth();
 		printLogger.error(LoggerFileConstant.SESSIONID.toString(), "OriginalFaceImage", "", image.toString());
