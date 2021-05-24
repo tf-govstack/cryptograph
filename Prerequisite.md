@@ -17,7 +17,7 @@
    To execute the above steps authentication is required. <br/>
    URL: POST https://{domain}/v1/authmanager/authenticate/useridPwd <br/>
    Request :   <br/>
-      ```JSON
+     ```JSON
         {
             "id": "string",
             "metadata": {},
