@@ -6,13 +6,13 @@
   auth_policy: mpolicy-default-reprint
   
   ```
-  If above data is not present, follow the below steps to create the above required data.
-    1. Create policy group 
-    2. Create data share policy
-    3. Create partner
-    4. Upload partner certs
-    5. Request for apiKey
-    6. Approve apikey
+  If above data is not present, follow the below steps to create the above required data.<br/>
+    1. Create policy group <br/>
+    2. Create data share policy <br/>
+    3. Create partner <br/>
+    4. Upload partner certs <br/>
+    5. Request for apiKey <br/>
+    6. Approve apikey <br/>
     
    To execute the above steps authentication is required. <br/>
    Resource URL: POST  `https://{domain}/v1/authmanager/authenticate/useridPwd` <br/>
@@ -206,7 +206,7 @@
         "id": "string",
         "metadata": {},
         "request": {
-          "policyName": "mpolicy-default-reprint2",
+          "policyName": "mpolicy-default-reprint",
           "useCaseDescription": "mpolicy-default-reprint"
         },
         "requesttime": "",
