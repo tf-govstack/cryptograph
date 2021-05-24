@@ -143,11 +143,8 @@ public class IDDecoderServiceImpl implements IDDecoderService {
 		if (value != null) {
 			Map<String, String> bdbBasedOnFace = cbeffutil.getBDBBasedOnType(CryptoUtil.decodeBase64(value), "Face",
 					null);
-			for (Entry<String, String> iterable_element : bdbBasedOnFace.entrySet()) {
-				printLogger.error(LoggerFileConstant.SESSIONID.toString(), "cbeff", "", iterable_element.getValue());
+			for (Entry<String, String> iterable_element : bdbBasedOnFace.entrySet()) {				
 				attributes.put("face_image", convertToJPG(iterable_element.getValue(), true));
-				printLogger.error(LoggerFileConstant.SESSIONID.toString(), "After Converting to png", "",
-						iterable_element.getValue());
 			}
 
 			Map<String, String> bdbBasedOnFinger = cbeffutil.getBDBBasedOnType(CryptoUtil.decodeBase64(value), "Finger",

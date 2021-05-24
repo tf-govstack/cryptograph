@@ -1,12 +1,8 @@
 package io.mosip.tf.t5.cryptograph.util;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -131,6 +127,6 @@ public class IDEncodeCaller {
 
 	private void getResponse(Response<BarCodeResponse> response) {
 		BarCodeResponse responseFromServer = response.body();
-		log.info("Got response from idencode service", responseFromServer.getUuid(), responseFromServer.getImage(), "");
+		log.info("Got response from idencode service", responseFromServer.getUuid(),"", "");
 	}
 }
