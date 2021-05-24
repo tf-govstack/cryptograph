@@ -15,7 +15,7 @@
     6. Approve apikey
     
    To execute the above steps authentication is required. <br/>
-   URL: POST https://{domain}/v1/authmanager/authenticate/useridPwd <br/>
+   Resource URL: POST  `https://{domain}/v1/authmanager/authenticate/useridPwd` <br/>
    Request :   <br/>
      ```JSON
         {
@@ -32,7 +32,7 @@
     ```
    <br/> 
    ### 1. Create policy group 
-   URL : POST https://{domain}/partnermanagement/v1/policies/policies/policyGroup <br/>
+   Resource URL : POST `https://{domain}/partnermanagement/v1/policies/policies/policyGroup` <br/>
    Request : <br/>
       ```JSON
             {
@@ -48,7 +48,7 @@
       ```
       <br/>
    ### 2. Create policy 
-   URL : POST https://{domain}/partnermanagement/v1/policies/policies <br/>
+   Resource URL : POST `https://{domain}/partnermanagement/v1/policies/policies` <br/>
    Request : <br/>
       ```JSON
           {
@@ -174,11 +174,11 @@
       ```
       <br/>
   ####2.1 Publish Policy <br/>
-  URL: POST https://{domain}/partnermanagement/v1/policies/policies/publishPolicy/policyGroupId/{policyGroupId}/policyId/{policyId} <br/>
+  Resource URL: POST `https://{domain}/partnermanagement/v1/policies/policies/publishPolicy/policyGroupId/{policyGroupId}/policyId/{policyId}` <br/>
     polciyGroupId and policyId are getting from above responses.
   
  ### 3. Create Partner 
- URL : POST https://{domain}/partnermanagement/v1/partners/partners <br/>
+ Resource URL : POST `https://{domain}/partnermanagement/v1/partners/partners` <br/>
  Request : <br/>
     ```JSON
       {
@@ -198,11 +198,11 @@
       }
     ```
   ### 4. Upload Partner certs
-  URL : 
+  Resource URL : 
   Request :
   
   ### 5. Request for apiKey
-  URL : PATCH https://{domain}/partnermanagement/v1/partners/partners/mpartner-default-print/partnerAPIKeyRequests <br/>
+  Resource URL : PATCH `https://{domain}/partnermanagement/v1/partners/partners/mpartner-default-print/partnerAPIKeyRequests` <br/>
   Request : <br/>
     ```JSON
       {
@@ -218,7 +218,7 @@
      ```
      <br/>
 ### 6. Approve apiKey
-URL : PATCH https://{domain}/partnermanagement/v1/pmpartners/pmpartners/PartnerAPIKeyRequests/{apiKey} <br/>
+Resource URL : PATCH `https://{domain}/partnermanagement/v1/pmpartners/pmpartners/PartnerAPIKeyRequests/{apiKey}` <br/>
     apiKey have to capture from step 5 response.
 Request : <br/>
   ```JSON
