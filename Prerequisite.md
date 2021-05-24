@@ -17,7 +17,7 @@
    To execute the above steps authentication is required. <br/>
    URL: POST https://{domain}/v1/authmanager/authenticate/useridPwd <br/>
    Request :   <br/>
-      ```
+      ```JSON
         {
             "id": "string",
             "metadata": {},
@@ -34,7 +34,7 @@
    ### 1. Create policy group 
    URL : POST https://{domain}/partnermanagement/v1/policies/policies/policyGroup <br/>
    Request : <br/>
-      ```
+      ```JSON
             {
               "id": "string",
               "metadata": {},
@@ -48,9 +48,9 @@
       ```
       <br/>
    ### 2. Create policy 
-   URL : POST https://{domain}/partnermanagement/v1/policies/policies
-   Request : 
-      ```
+   URL : POST https://{domain}/partnermanagement/v1/policies/policies <br/>
+   Request : <br/>
+      ```JSON
           {
             "id": "string",
             "metadata": {},
@@ -172,14 +172,15 @@
             "version": "string"
           }
       ```
-  ####2.1 Publish Policy
-  URL: POST https://{domain}/partnermanagement/v1/policies/policies/publishPolicy/policyGroupId/{policyGroupId}/policyId/{policyId}
+      <br/>
+  ####2.1 Publish Policy <br/>
+  URL: POST https://{domain}/partnermanagement/v1/policies/policies/publishPolicy/policyGroupId/{policyGroupId}/policyId/{policyId} <br/>
     polciyGroupId and policyId are getting from above responses.
   
- ### 3. Create Partner
- URL : POST https://{domain}/partnermanagement/v1/partners/partners
- Request :
-    ```
+ ### 3. Create Partner 
+ URL : POST https://{domain}/partnermanagement/v1/partners/partners <br/>
+ Request : <br/>
+    ```JSON
       {
         "id": "string",
         "metadata": {},
@@ -201,9 +202,9 @@
   Request :
   
   ### 5. Request for apiKey
-  URL : PATCH https://{domain}/partnermanagement/v1/partners/partners/mpartner-default-print/partnerAPIKeyRequests
-  Request :
-    ```
+  URL : PATCH https://{domain}/partnermanagement/v1/partners/partners/mpartner-default-print/partnerAPIKeyRequests <br/>
+  Request : <br/>
+    ```JSON
       {
         "id": "string",
         "metadata": {},
@@ -215,11 +216,12 @@
         "version": "string"
       }
      ```
+     <br/>
 ### 6. Approve apiKey
-URL : PATCH https://{domain}/partnermanagement/v1/pmpartners/pmpartners/PartnerAPIKeyRequests/{apiKey}
+URL : PATCH https://{domain}/partnermanagement/v1/pmpartners/pmpartners/PartnerAPIKeyRequests/{apiKey} <br/>
     apiKey have to capture from step 5 response.
-Request :
-  ```
+Request : <br/>
+  ```JSON
       {
         "id": "string",
         "metadata": {},
