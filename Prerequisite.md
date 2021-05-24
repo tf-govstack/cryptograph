@@ -17,8 +17,8 @@
    To execute the above steps authentication is required. <br/>
    Resource URL: POST  `https://{domain}/v1/authmanager/authenticate/useridPwd` <br/>
    Request :   <br/>
-     ```json
-        {
+   ```json
+    {
             "id": "string",
             "metadata": {},
             "request": {
@@ -29,13 +29,12 @@
             "requesttime": "2018-12-10T06:12:52.994Z",
             "version": "string"
        }
-    ```
-   <br/> 
+   ```
    ### 1. Create policy group 
    Resource URL : POST `https://{domain}/partnermanagement/v1/policies/policies/policyGroup` <br/>
    Request : <br/>
-      ```JSON
-            {
+   ```json
+    {
               "id": "string",
               "metadata": {},
               "request": {
@@ -45,13 +44,12 @@
               "requesttime": "2018-12-10T06:12:52.994Z",
               "version": "string"
             }
-      ```
-      <br/>
+   ```
    ### 2. Create policy 
    Resource URL : POST `https://{domain}/partnermanagement/v1/policies/policies` <br/>
    Request : <br/>
-      ```JSON
-          {
+   ```json
+    {
             "id": "string",
             "metadata": {},
             "request": {
@@ -171,8 +169,7 @@
             "requesttime": "2018-12-10T06:12:52.994Z",
             "version": "string"
           }
-      ```
-      <br/>
+   ```
   ####2.1 Publish Policy <br/>
   Resource URL: POST `https://{domain}/partnermanagement/v1/policies/policies/publishPolicy/policyGroupId/{policyGroupId}/policyId/{policyId}` <br/>
     polciyGroupId and policyId are getting from above responses.
@@ -180,7 +177,7 @@
  ### 3. Create Partner 
  Resource URL : POST `https://{domain}/partnermanagement/v1/partners/partners` <br/>
  Request : <br/>
-    ```JSON
+ ```json
       {
         "id": "string",
         "metadata": {},
@@ -196,7 +193,7 @@
         "requesttime": "",
         "version": "string"
       }
-    ```
+ ```
   ### 4. Upload Partner certs
   Resource URL : 
   Request :
@@ -215,7 +212,7 @@
         "requesttime": "",
         "version": "string"
       }    
-  ```
+ ```
 ### 6. Approve apiKey
 Resource URL : PATCH `https://{domain}/partnermanagement/v1/pmpartners/pmpartners/PartnerAPIKeyRequests/{apiKey}` <br/>
     apiKey have to capture from step 5 response. <br/>
@@ -231,6 +228,5 @@ Request : <br/>
         "version": "string"
       }
    ```
-  
    
    
