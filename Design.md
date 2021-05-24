@@ -43,7 +43,7 @@
   
   
 ### Cryptograph Service
-  This service is responsible for cryptograph generation. More details of the service can be found on this link. 	[Markdown - Link](#https://idencode.tech5-sa.com/)
+  This service is responsible for cryptograph generation. More details of the service can be found on this link https://idencode.tech5-sa.com
 
 
 
