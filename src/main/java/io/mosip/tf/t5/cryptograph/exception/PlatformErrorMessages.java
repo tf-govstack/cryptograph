@@ -3,9 +3,8 @@ package io.mosip.tf.t5.cryptograph.exception;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Enum PRTPlatformErrorMessages.
- *
- * @author M1047487
+ * The Enum PRTPlatformErrorMessages. *
+ * 
  */
 public enum PlatformErrorMessages {
 

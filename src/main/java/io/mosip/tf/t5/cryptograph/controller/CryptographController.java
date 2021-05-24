@@ -1,12 +1,10 @@
 package io.mosip.tf.t5.cryptograph.controller;
 
-import java.io.ByteArrayInputStream;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -57,7 +55,7 @@ public class CryptographController {
 		Map<String, String> proofMap = new HashMap<String, String>();
 		proofMap = (Map<String, String>) eventModel.getEvent().getData().get("proof");
 		String sign = proofMap.get("signature").toString();
-		iDDecoderService.getDocuments(decodedCrdential,
+		iDDecoderService.extractData(decodedCrdential,
 				eventModel.getEvent().getData().get("credentialType").toString(), ecryptionPin,
 				eventModel.getEvent().getTransactionId(),
 				getSignature(sign, credential), "UIN", false);				

@@ -90,7 +90,7 @@ public class RestClientServiceImpl implements RestClientService<Object> {
 			} catch (Exception e) {
 				e.printStackTrace();
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), "",
+						LoggerFileConstant.CRYPTOGRAPHID.toString(), "",
 						e.getMessage() + ExceptionUtils.getStackTrace(e));
 
 				throw new ApisResourceAccessException(
@@ -141,7 +141,7 @@ public class RestClientServiceImpl implements RestClientService<Object> {
 			} catch (Exception e) {
 				e.printStackTrace();
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), "",
+						LoggerFileConstant.CRYPTOGRAPHID.toString(), "",
 						e.getMessage() + ExceptionUtils.getStackTrace(e));
 
 				throw new ApisResourceAccessException(
@@ -180,7 +180,7 @@ public class RestClientServiceImpl implements RestClientService<Object> {
 
 			} catch (Exception e) {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), "",
+						LoggerFileConstant.CRYPTOGRAPHID.toString(), "",
 						e.getMessage() + ExceptionUtils.getStackTrace(e));
 
 				throw new ApisResourceAccessException(
@@ -251,7 +251,7 @@ public class RestClientServiceImpl implements RestClientService<Object> {
 
 			} catch (Exception e) {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), "",
+						LoggerFileConstant.CRYPTOGRAPHID.toString(), "",
 						e.getMessage() + ExceptionUtils.getStackTrace(e));
 
 				throw new ApisResourceAccessException(
@@ -297,7 +297,7 @@ public class RestClientServiceImpl implements RestClientService<Object> {
 
 			} catch (Exception e) {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), "",
+						LoggerFileConstant.CRYPTOGRAPHID.toString(), "",
 						e.getMessage() + ExceptionUtils.getStackTrace(e));
 
 				throw new ApisResourceAccessException(
@@ -352,7 +352,7 @@ public class RestClientServiceImpl implements RestClientService<Object> {
 
 			} catch (Exception e) {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), "",
+						LoggerFileConstant.CRYPTOGRAPHID.toString(), "",
 						e.getMessage() + ExceptionUtils.getStackTrace(e));
 
 				throw new ApisResourceAccessException(
@@ -407,7 +407,7 @@ public class RestClientServiceImpl implements RestClientService<Object> {
 
 			} catch (Exception e) {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), "",
+						LoggerFileConstant.CRYPTOGRAPHID.toString(), "",
 						e.getMessage() + ExceptionUtils.getStackTrace(e));
 
 				throw new ApisResourceAccessException(

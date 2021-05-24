@@ -29,8 +29,7 @@ import io.mosip.tf.t5.cryptograph.exception.PlatformErrorMessages;
 /**
  * This class provides JSON utilites.
  *
- * @author Pranav Kumar
- * @since 0.0.1
+ * @author Nagarjuna
  */
 public class JsonUtil {
 

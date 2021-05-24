@@ -15,7 +15,7 @@ public interface IDDecoderService {
 	 *            the is password protected
 	 * @return the documents
 	 */
-	public void getDocuments(String credentialSubject, String credentialType, String encryptionPin, String requestId,
+	public void extractData(String credentialSubject, String credentialType, String encryptionPin, String requestId,
 			String sign,
 			String cardType, boolean isPasswordProtected);	
 }

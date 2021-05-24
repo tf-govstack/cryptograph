@@ -32,11 +32,6 @@ import javax.crypto.spec.PSource.PSpecified;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.bouncycastle.crypto.InvalidCipherTextException;
-import org.bouncycastle.crypto.digests.SHA256Digest;
-import org.bouncycastle.crypto.encodings.OAEPEncoding;
-import org.bouncycastle.crypto.engines.RSAEngine;
-import org.bouncycastle.crypto.params.RSAKeyParameters;
 import org.springframework.stereotype.Component;
 
 import io.mosip.tf.t5.cryptograph.exception.CryptoManagerException;
@@ -79,17 +74,7 @@ public class CryptoCoreUtil {
 		byte[] encryptedKey = copyOfRange(requestData, 0, keyDemiliterIndex);
 		try {
 			encryptedData = copyOfRange(requestData, keyDemiliterIndex + keySplitterLength, cipherKeyandDataLength);
-			// byte[] dataThumbprint = Arrays.copyOfRange(encryptedKey, 0,
-			// THUMBPRINT_LENGTH);
 			encryptedSymmetricKey = Arrays.copyOfRange(encryptedKey, THUMBPRINT_LENGTH, encryptedKey.length);
-			// byte[] certThumbprint =
-			// getCertificateThumbprint(privateKey.getCertificate());
-
-			/*
-			 * if (!Arrays.equals(dataThumbprint, certThumbprint)) { throw new
-			 * Exception("Error in generating Certificate Thumbprint."); }
-			 */
-
 			byte[] decryptedSymmetricKey = asymmetricDecrypt(privateKey.getPrivateKey(),
 					((RSAPrivateKey) privateKey.getPrivateKey()).getModulus(), encryptedSymmetricKey);
 			symmetricKey = new SecretKeySpec(decryptedSymmetricKey, 0, decryptedSymmetricKey.length, "AES");
@@ -149,24 +134,6 @@ public class CryptoCoreUtil {
 		} catch (InvalidAlgorithmParameterException e) {
 			throw new InvalidAlgorithmParameterException(e);
 		}
-	}
-
-	/**
-	 *
-	 * @param paddedPlainText
-	 * @param privateKey
-	 * @return
-	 * @throws InvalidCipherTextException
-	 * @throws InvalidKeyException
-	 */
-	private static byte[] unpadOAEPPadding(byte[] paddedPlainText, BigInteger keyModulus)
-			throws InvalidCipherTextException {
-
-		OAEPEncoding encode = new OAEPEncoding(new RSAEngine(), new SHA256Digest());
-		BigInteger exponent = new BigInteger("1");
-		RSAKeyParameters keyParams = new RSAKeyParameters(false, keyModulus, exponent);
-		encode.init(false, keyParams);
-		return encode.processBlock(paddedPlainText, 0, paddedPlainText.length);
 	}
 
 	private static byte[] symmetricDecrypt(SecretKey key, byte[] data, byte[] aad) {

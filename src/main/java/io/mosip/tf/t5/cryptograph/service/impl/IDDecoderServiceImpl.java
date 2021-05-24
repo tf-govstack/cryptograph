@@ -6,7 +6,6 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -65,9 +64,6 @@ public class IDDecoderServiceImpl implements IDDecoderService {
 	@Autowired
 	private IDEncodeCaller enrollDataUpload;
 
-	/** The Constant FILE_SEPARATOR. */
-	public static final String FILE_SEPARATOR = File.separator;
-
 	/** The Constant VALUE. */
 	private static final String VALUE = "value";
 
@@ -77,10 +73,9 @@ public class IDDecoderServiceImpl implements IDDecoderService {
 
 	/** The secondary lang. */
 	@Value("${mosip.secondary-language}")
-	private String secondaryLang;	
-	
+	private String secondaryLang;
+
 	private static Logger printLogger = CryptographLogger.getLogger(IDDecoderServiceImpl.class);
-	
 
 	/** The utilities. */
 	@Autowired
@@ -94,11 +89,10 @@ public class IDDecoderServiceImpl implements IDDecoderService {
 	private CbeffUtil cbeffutil;
 
 	@Override
-	public void getDocuments(String credential, String credentialType, String encryptionPin, String requestId,
+	public void extractData(String credential, String credentialType, String encryptionPin, String requestId,
 			String sign, String cardType, boolean isPasswordProtected) {
-		printLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+		printLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.CRYPTOGRAPHID.toString(), "",
 				"IDDecoderServiceImpl::getDocuments()::entry");
-
 		String credentialSubject;
 		new HashMap<>();
 		String uin = null;
@@ -108,35 +102,30 @@ public class IDDecoderServiceImpl implements IDDecoderService {
 		Map<String, byte[]> bioAttributes = new LinkedHashMap<>();
 		try {
 			credentialSubject = getCrdentialSubject(credential);
-			printLogger.error(LoggerFileConstant.SESSIONID.toString(), "credentialSubject", "", credentialSubject);
 			org.json.JSONObject credentialSubjectJson = new org.json.JSONObject(credentialSubject);
-			printLogger.error(LoggerFileConstant.SESSIONID.toString(), "credentialSubjectJson", "",
-					credentialSubjectJson.toString());
 			org.json.JSONObject decryptedJson = decryptAttribute(credentialSubjectJson, encryptionPin, credential);
-			printLogger.error(LoggerFileConstant.SESSIONID.toString(), "decryptedJson", "", decryptedJson.toString());
 			individualBio = decryptedJson.getString("biometrics");
-			printLogger.error(LoggerFileConstant.SESSIONID.toString(), "individualBio", "", individualBio);
 			String individualBiometric = new String(individualBio);
 			uin = decryptedJson.getString("UIN");
-			boolean isPhotoSet = extractBiometrics(individualBiometric, bioAttributes);
-			if (!isPhotoSet) {
-				printLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+			boolean isBiometricsExtracted = extractBiometrics(individualBiometric, bioAttributes);
+			if (!isBiometricsExtracted) {
+				printLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.CRYPTOGRAPHID.toString(),
 						uin, PlatformErrorMessages.PRT_PRT_APPLICANT_PHOTO_NOT_SET.name());
 			}
-			setTemplateAttributes(decryptedJson.toString(), demoAttributes);
+			setDemographicsData(decryptedJson.toString(), demoAttributes);
 			demoAttributes.put(IdType.UIN.toString(), uin);
 			enrollDataUpload.uploadData(demoAttributes, bioAttributes);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			description.setMessage(PlatformErrorMessages.PRT_PRT_PDF_GENERATION_FAILED.getMessage());
 			description.setCode(PlatformErrorMessages.PRT_PRT_PDF_GENERATION_FAILED.getCode());
-			printLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+			printLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.CRYPTOGRAPHID.toString(),
 					"UIN", description + ex.getMessage() + ExceptionUtils.getStackTrace(ex));
 			throw new PDFGeneratorException(PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
 					ex.getMessage() + ExceptionUtils.getStackTrace(ex));
 
 		}
-		printLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+		printLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.CRYPTOGRAPHID.toString(), "",
 				"IDDecoderServiceImpl::getDocuments()::exit");
 	}
 
@@ -156,7 +145,7 @@ public class IDDecoderServiceImpl implements IDDecoderService {
 					null);
 			for (Entry<String, String> iterable_element : bdbBasedOnFace.entrySet()) {
 				printLogger.error(LoggerFileConstant.SESSIONID.toString(), "cbeff", "", iterable_element.getValue());
-				attributes.put("face_image", convertToJPG(iterable_element.getValue(),true));
+				attributes.put("face_image", convertToJPG(iterable_element.getValue(), true));
 				printLogger.error(LoggerFileConstant.SESSIONID.toString(), "After Converting to png", "",
 						iterable_element.getValue());
 			}
@@ -166,10 +155,10 @@ public class IDDecoderServiceImpl implements IDDecoderService {
 			for (Entry<String, String> iterable_element : bdbBasedOnFinger.entrySet()) {
 				String[] str = iterable_element.getKey().split("_");
 				if (str[1].equalsIgnoreCase("Right Thumb")) {
-					attributes.put("finger_image_r1", convertToJPG(iterable_element.getValue(),false));
+					attributes.put("finger_image_r1", convertToJPG(iterable_element.getValue(), false));
 				}
 				if (str[1].equalsIgnoreCase("Right IndexFinger")) {
-					attributes.put("finger_image_r2", convertToJPG(iterable_element.getValue(),false));
+					attributes.put("finger_image_r2", convertToJPG(iterable_element.getValue(), false));
 				}
 //				if (str[1].equalsIgnoreCase("Right MiddleFinger")) {
 //					attributes.put("finger_image_r3", convertToJPG(iterable_element.getValue()));
@@ -181,10 +170,10 @@ public class IDDecoderServiceImpl implements IDDecoderService {
 //					attributes.put("finger_image_r5", convertToJPG(iterable_element.getValue()));
 //				}
 				if (str[1].equalsIgnoreCase("Left Thumb")) {
-					attributes.put("finger_image_l1", convertToJPG(iterable_element.getValue(),false));
+					attributes.put("finger_image_l1", convertToJPG(iterable_element.getValue(), false));
 				}
 				if (str[1].equalsIgnoreCase("Left IndexFinger")) {
-					attributes.put("finger_image_l2", convertToJPG(iterable_element.getValue(),false));
+					attributes.put("finger_image_l2", convertToJPG(iterable_element.getValue(), false));
 				}
 //				if (str[1].equalsIgnoreCase("Left MiddleFinger")) {
 //					attributes.put("finger_image_l3", convertToJPG(iterable_element.getValue()));
@@ -214,7 +203,7 @@ public class IDDecoderServiceImpl implements IDDecoderService {
 	 * @throws ParseException
 	 */
 	@SuppressWarnings("unchecked")
-	private void setTemplateAttributes(String jsonString, Map<String, Object> attribute)
+	private void setDemographicsData(String jsonString, Map<String, Object> attribute)
 			throws IOException, ParseException {
 		try {
 			JSONObject demographicIdentity = JsonUtil.objectMapperReadValue(jsonString, JSONObject.class);
@@ -233,7 +222,6 @@ public class IDDecoderServiceImpl implements IDDecoderService {
 				Object obj = null;
 				String values = jsonObject.get(VALUE);
 				for (String value : values.split(",")) {
-					// Object object = demographicIdentity.get(value);
 					Object object = demographicIdentity.get(value);
 					if (object != null) {
 						try {
@@ -243,7 +231,6 @@ public class IDDecoderServiceImpl implements IDDecoderService {
 						}
 
 						if (obj instanceof JSONArray) {
-							// JSONArray node = JsonUtil.getJSONArray(demographicIdentity, value);
 							JsonValue[] jsonValues = JsonUtil.mapJsonNodeToJavaObject(JsonValue.class, (JSONArray) obj);
 							for (JsonValue jsonValue : jsonValues) {
 								if (jsonValue.getLanguage().equals(primaryLang))
@@ -264,7 +251,7 @@ public class IDDecoderServiceImpl implements IDDecoderService {
 			}
 
 		} catch (JsonParseException | JsonMappingException e) {
-			printLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+			printLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.CRYPTOGRAPHID.toString(),
 					null, "Error while parsing Json file" + ExceptionUtils.getStackTrace(e));
 			throw new ParsingException(PlatformErrorMessages.PRT_RGS_JSON_PARSING_EXCEPTION.getMessage(), e);
 		}
@@ -293,22 +280,19 @@ public class IDDecoderServiceImpl implements IDDecoderService {
 					decryptRequestDto.setUserPin(encryptionPin);
 					decryptRequestDto.setData(data.getString(str.toString()));
 					request.setRequest(decryptRequestDto);
-					// response=(DecryptResponseDto)restApiClient.postApi(env.getProperty(ApiName.DECRYPTPINBASSED.name()),
-					// "", de, DecryptResponseDto.class)
 					response = (ResponseWrapper) restClientService.postApi(ServiceConstant.DECRYPTPINBASSED, "", "",
 							request, ResponseWrapper.class);
-
 					decryptResponseDto = JsonUtil.readValue(JsonUtil.writeValueAsString(response.getResponse()),
 							DecryptResponseDto.class);
 					data.put((String) str, decryptResponseDto.getData());
 				} catch (ApisResourceAccessException e) {
 					printLogger.error(LoggerFileConstant.SESSIONID.toString(),
-							LoggerFileConstant.REGISTRATIONID.toString(), null,
+							LoggerFileConstant.CRYPTOGRAPHID.toString(), null,
 							"Error while parsing Json file" + ExceptionUtils.getStackTrace(e));
 					throw new ParsingException(PlatformErrorMessages.PRT_RGS_JSON_PARSING_EXCEPTION.getMessage(), e);
 				} catch (IOException e) {
 					printLogger.error(LoggerFileConstant.SESSIONID.toString(),
-							LoggerFileConstant.REGISTRATIONID.toString(), null,
+							LoggerFileConstant.CRYPTOGRAPHID.toString(), null,
 							"Error while parsing Json file" + ExceptionUtils.getStackTrace(e));
 					throw new ParsingException(PlatformErrorMessages.PRT_RGS_JSON_PARSING_EXCEPTION.getMessage(), e);
 				}
@@ -323,7 +307,7 @@ public class IDDecoderServiceImpl implements IDDecoderService {
 	 * @param isoTemplate
 	 * @return
 	 */
-	private byte[] convertToJPG(String isoTemplate, boolean isFace) {
+	private byte[] convertToJPG(String isoTemplate, boolean isUpscaleRequired) {
 		byte[] inputFileBytes = CryptoUtil.decodeBase64(isoTemplate);
 		int index;
 		for (index = 0; index < inputFileBytes.length; index++) {
@@ -332,7 +316,8 @@ public class IDDecoderServiceImpl implements IDDecoderService {
 			}
 		}
 		try {
-			return convertToJPG(Arrays.copyOfRange(inputFileBytes, index - 4, inputFileBytes.length), "image", isFace);
+			return convertToJPG(Arrays.copyOfRange(inputFileBytes, index - 4, inputFileBytes.length), "image",
+					isUpscaleRequired);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -347,7 +332,7 @@ public class IDDecoderServiceImpl implements IDDecoderService {
 	 * @return
 	 * @throws IOException
 	 */
-	private byte[] convertToJPG(byte[] jp2Data, String fileName,boolean isFace) throws IOException {
+	private byte[] convertToJPG(byte[] jp2Data, String fileName, boolean isUpscaleRequired) throws IOException {
 		ByteArrayOutputStream beforeUpScale = new ByteArrayOutputStream();
 		ByteArrayOutputStream afterUpScale = new ByteArrayOutputStream();
 		J2KImageReader j2kImageReader = new J2KImageReader(null);
@@ -355,15 +340,13 @@ public class IDDecoderServiceImpl implements IDDecoderService {
 		ImageReadParam imageReadParam = j2kImageReader.getDefaultReadParam();
 		BufferedImage image = j2kImageReader.read(0, imageReadParam);
 		ImageIO.write(image, "PNG", beforeUpScale);
-		if(!isFace) {
+		if (!isUpscaleRequired) {
 			return beforeUpScale.toByteArray();
 		}
 		int height = image.getHeight();
 		int width = image.getWidth();
-		printLogger.error(LoggerFileConstant.SESSIONID.toString(), "OriginalFaceImage", "", image.toString());
 		BufferedImage outputImage = createResizedCopy(image, 2 * width, 2 * height, true);
 		ImageIO.write(outputImage, "PNG", afterUpScale);
-		printLogger.error(LoggerFileConstant.SESSIONID.toString(), "UpscaledImage", "", outputImage.toString());
 		byte[] jpgImg = afterUpScale.toByteArray();
 		return jpgImg;
 	}
