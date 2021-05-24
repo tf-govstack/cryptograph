@@ -195,23 +195,23 @@
       }
  ```
   ### 4. Upload Partner certs
-   **4.1 Upload CA Cert:**      
-    Resource URL : `https://{domain}/partnermanagement/v1/partners/partners/uploadCACertificate`
+   **4.1 Upload CA Cert:**    <br/>  
+    Resource URL : `https://{domain}/partnermanagement/v1/partners/partners/uploadCACertificate` <br/>
     Request : <br/>
     ```json
       {
-  "id": "string",
-  "metadata": {},
-  "request": {
-        "certificateData": "-----BEGIN CERTIFICATE-----\nMIIDFTCCAf2gAwIBAgIESXfzlDANBgkqhkiG9w0BAQsFADA7MQswCQYDVQQGEwJJ\nTjELMAkGA1UECBMCS0ExDTALBgNVBAoTBFRlc3QxEDAOBgNVBAMTB1JPT1QtQ0Ew\nHhcNMjAxMjE4MTM1NDM0WhcNMjMxMjE4MTM1NDM0WjA7MQswCQYDVQQGEwJJTjEL\nMAkGA1UECBMCS0ExDTALBgNVBAoTBFRlc3QxEDAOBgNVBAMTB1JPT1QtQ0EwggEi\nMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC8gwrXv+9PXyY4P4+6Kr2i5EYE\nycrqoBz0UrZYT+mIUl1JF7CFddujpy8ejF78RbgjZoCqcxmi31Abj6Sj6MPRlMXI\nXVWzE6DQPK2xHn+3it8es+QAHt2Z4zDJSICm2DI9qCQa95iTl/WbrQK4nHYeiSx3\nBOQuf05pNSiPcrBqP+xwxcPkNVIl0eRbs0Lnd37qWh9ZBIy3N4tJduneJGRwW1qs\nYvTTUxPBIlCBraqLq7o9uxMr9+kOv1wxesV8ZGOS3KFa4CQxOHywJ1secnMnca0e\ntQQcmSzckG+8QqKQQNbfFSRYkRkfOM4aHRDozmMMTdI0TA9eELZxFMXiTkjlAgMB\nAAGjITAfMB0GA1UdDgQWBBSKXY7NPI6uL5BhbICYl4wWQUdEOTANBgkqhkiG9w0B\nAQsFAAOCAQEAbk+qM7X1G0SRH/bHEu0Yntx2Lae+iYyrCLEHOgJ+ygQ4u/FzGjQQ\nJWGWZtqpehE0sN/CBB/xfz3FDAJdj7iNYD3H0fNRNywpQWQt1EzKkwJFxgJ16P7l\nq9DzZpz1EuFZC/eqbkFhQSqbRrBnLVzYgAc9RZnaqRS5TSF/J+Qj+uUYbcGeWBRN\nPVcPwM7Nx0sQLHosPYZt7YTytr2P9NVZgBGLre+aNECWeRh3hBIBZ52qSVDq/1Df\nW9sqNLTel9i0l5eNC9AuIf8TwSqGUUTkHqLI4lk5KoUfei15DDOPLOESqplYYezb\nY6Ujm9OwNYFSDuS2IMTAIxzheHt/XJnxMw==\n-----END CERTIFICATE-----",
-        "partnerDomain": "Auth"
-      },
-  "requesttime": "2021-02-04T10:03:17.406Z",
-  "version": "string"
-}
-    ```
+        "id": "string",
+        "metadata": {},
+        "request": {
+                "certificateData": "-----BEGIN CERTIFICATE-----\nMIIDFTCCAf2g     AwIBAgIESXfzlDANBgkqhkiG9w0BAQsFADA7MQswCQYDVQQGEwJJ\nTjELMAkGA1UECBMCS0ExDTALBgNVBAoTBFRlc3QxEDAOBgNVBAMTB1JPT1QtQ0Ew\nHhcNMjAxMjE4MTM1NDM0WhcNMjMxMjE4MTM1NDM0WjA7MQswCQYDVQQGEwJJTjEL\nMAkGA1UECBMCS0ExDTALBgNVBAoTBFRlc3QxEDAOBgNVBAMTB1JPT1QtQ0EwggEi\nMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC8gwrXv+9PXyY4P4+6Kr2i5EYE\nycrqoBz0UrZYT+mIUl1JF7CFddujpy8ejF78RbgjZoCqcxmi31Abj6Sj6MPRlMXI\nXVWzE6DQPK2xHn+3it8es+QAHt2Z4zDJSICm2DI9qCQa95iTl/WbrQK4nHYeiSx3\nBOQuf05pNSiPcrBqP+xwxcPkNVIl0eRbs0Lnd37qWh9ZBIy3N4tJduneJGRwW1qs\nYvTTUxPBIlCBraqLq7o9uxMr9+kOv1wxesV8ZGOS3KFa4CQxOHywJ1secnMnca0e\ntQQcmSzckG+8QqKQQNbfFSRYkRkfOM4aHRDozmMMTdI0TA9eELZxFMXiTkjlAgMB\nAAGjITAfMB0GA1UdDgQWBBSKXY7NPI6uL5BhbICYl4wWQUdEOTANBgkqhkiG9w0B\nAQsFAAOCAQEAbk+qM7X1G0SRH/bHEu0Yntx2Lae+iYyrCLEHOgJ+ygQ4u/FzGjQQ\nJWGWZtqpehE0sN/CBB/xfz3FDAJdj7iNYD3H0fNRNywpQWQt1EzKkwJFxgJ16P7l\nq9DzZpz1EuFZC/eqbkFhQSqbRrBnLVzYgAc9RZnaqRS5TSF/J+Qj+uUYbcGeWBRN\nPVcPwM7Nx0sQLHosPYZt7YTytr2P9NVZgBGLre+aNECWeRh3hBIBZ52qSVDq/1Df\nW9sqNLTel9i0l5eNC9AuIf8TwSqGUUTkHqLI4lk5KoUfei15DDOPLOESqplYYezb\nY6Ujm9OwNYFSDuS2IMTAIxzheHt/XJnxMw==\n-----END CERTIFICATE-----",
+              "partnerDomain": "Auth"
+            },
+        "requesttime": "2021-02-04T10:03:17.406Z",
+        "version": "string"
+      }
+     ```
    **4.2 Upload partner cert**
-   Resource URL : `https://{domain}/partnermanagement/v1/partners/partners/uploadPartnerCertificate`
+   Resource URL : `https://{domain}/partnermanagement/v1/partners/partners/uploadPartnerCertificate` <br/>
     Request : <br/>
     ```json
       {
@@ -227,8 +227,7 @@
   "requesttime": "2020-12-31T04:51:15.390Z",
   "version": "string"
 }
-
-    ```
+     ```
   ### 5. Request for apiKey
   Resource URL : PATCH `https://{domain}/partnermanagement/v1/partners/partners/mpartner-default-print/partnerAPIKeyRequests` <br/>
   Request : <br/>
