@@ -206,11 +206,6 @@
   Request : <br/>
   ```json
     {
-      
-    }    
-  ```
-    ```JSON
-      {
         "id": "string",
         "metadata": {},
         "request": {
@@ -219,9 +214,8 @@
         },
         "requesttime": "",
         "version": "string"
-      }
-     ```
-     <br/>
+      }    
+  ```
 ### 6. Approve apiKey
 Resource URL : PATCH `https://{domain}/partnermanagement/v1/pmpartners/pmpartners/PartnerAPIKeyRequests/{apiKey}` <br/>
     apiKey have to capture from step 5 response. <br/>
