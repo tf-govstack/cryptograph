@@ -14,9 +14,9 @@
     5. Request for apiKey
     6. Approve apikey
     
-   To execute the above steps authentication is required. 
-   URL: POST https://{domain}/v1/authmanager/authenticate/useridPwd
-   Request : 
+   To execute the above steps authentication is required. <br/>
+   URL: POST https://{domain}/v1/authmanager/authenticate/useridPwd <br/>
+   Request :   <br/>
       ```
         {
             "id": "string",
@@ -30,10 +30,10 @@
             "version": "string"
        }
     ```
-    
-   ### 1. Create policy group
-   URL : POST https://{domain}/partnermanagement/v1/policies/policies/policyGroup
-   Request :
+   <br/> 
+   ### 1. Create policy group 
+   URL : POST https://{domain}/partnermanagement/v1/policies/policies/policyGroup <br/>
+   Request : <br/>
       ```
             {
               "id": "string",
@@ -46,6 +46,7 @@
               "version": "string"
             }
       ```
+      <br/>
    ### 2. Create policy 
    URL : POST https://{domain}/partnermanagement/v1/policies/policies
    Request : 
