@@ -193,11 +193,11 @@
         "requesttime": "",
         "version": "string"
       }
- ```
+  ```
   ### 4. Upload Partner certs
-   **4.1 Upload CA Cert:**    <br/>  
+   **4.1 Upload CA Cert:**  <br/>  
     Resource URL : `https://{domain}/partnermanagement/v1/partners/partners/uploadCACertificate` <br/>
-    Request : <br/>
+    Request :  <br/>
     ```json
       {
         "id": "string",
@@ -208,13 +208,14 @@
             },
         "requesttime": "2021-02-04T10:03:17.406Z",
         "version": "string"
-      }
-     ```
+      } 
+    ```
+   
    **4.2 Upload partner cert**
    Resource URL : `https://{domain}/partnermanagement/v1/partners/partners/uploadPartnerCertificate` <br/>
-    Request : <br/>
-    ```json
-      {
+   Request : <br/>
+   ```json
+    {
   "id": "string",
   "metadata": {},
   "request": {
@@ -227,7 +228,8 @@
   "requesttime": "2020-12-31T04:51:15.390Z",
   "version": "string"
 }
-     ```
+   ```
+ 
   ### 5. Request for apiKey
   Resource URL : PATCH `https://{domain}/partnermanagement/v1/partners/partners/mpartner-default-print/partnerAPIKeyRequests` <br/>
   Request : <br/>
