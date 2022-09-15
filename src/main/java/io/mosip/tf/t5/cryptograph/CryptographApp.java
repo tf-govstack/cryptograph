@@ -26,7 +26,10 @@ public class CryptographApp {
 
 	@Bean
 	public ThreadPoolTaskScheduler getTaskScheduler() {
-		return new ThreadPoolTaskScheduler();
+		ThreadPoolTaskScheduler threadPoolTaskScheduler = new ThreadPoolTaskScheduler();
+		threadPoolTaskScheduler.setPoolSize(5);
+		threadPoolTaskScheduler.setThreadNamePrefix("ThreadPoolTaskScheduler");
+		return threadPoolTaskScheduler;
 	}
 
 	public static void main(String[] args) {
