@@ -62,8 +62,9 @@ public class WebSubSubscriptionHelper {
 			subscriptionRequest.setTopic(topic);
 			sb.subscribe(subscriptionRequest);
 		} catch (WebSubClientException e) {
+			e.printStackTrace();
 			LOGGER.info(LoggerFileConstant.SESSIONID.toString(), WEBSUBSUBSCRIPTIONHEPLER, INITSUBSCRIPTION,
-					"websub subscription error");
+					"websub subscription error " + e.getMessage());
 		}
 	}
 
@@ -74,8 +75,9 @@ public class WebSubSubscriptionHelper {
 		pb.publishUpdate(topic, credentialStatusEvent, MediaType.APPLICATION_JSON_UTF8_VALUE, headers,
 				webSubHubUrl + "/publish");
 	} catch (WebSubClientException e) {
+		e.printStackTrace();
 		LOGGER.info(LoggerFileConstant.SESSIONID.toString(), WEBSUBSUBSCRIPTIONHEPLER, INITSUBSCRIPTION,
-				"websub publish update error");
+				"websub publish update error " + e.getLocalizedMessage());
 	}
 
 	}
