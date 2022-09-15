@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.websub.api.annotation.PreAuthenticateContentAndVerifyIntent;
 import io.mosip.tf.t5.cryptograph.exception.RegPrintAppException;
+import io.mosip.tf.t5.cryptograph.logger.CryptographLogger;
 import io.mosip.tf.t5.cryptograph.model.EventModel;
 import io.mosip.tf.t5.cryptograph.service.IDDecoderService;
 import io.mosip.tf.t5.cryptograph.util.CryptoCoreUtil;
@@ -33,6 +35,7 @@ public class CryptographController {
 	@Autowired
 	CryptoCoreUtil cryptoCoreUtil;
 
+	private static Logger printLogger = CryptographLogger.getLogger(CryptographController.class);
 
 
 	/**
@@ -49,8 +52,11 @@ public class CryptographController {
 	@PostMapping(path = "/callback/notifyPrint", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthenticateContentAndVerifyIntent(secret = "${mosip.event.secret}", callback = "/v1/print/print/callback/notifyPrint", topic = "${mosip.event.topic}")
 	public ResponseEntity<String> handleSubscribeEvent(@RequestBody EventModel eventModel) throws Exception {
+		printLogger.info("Data", eventModel.toString(), "", "");		
 		String credential = eventModel.getEvent().getData().get("credential").toString();
+		printLogger.info("credential", credential, "", "");		
 		String ecryptionPin = eventModel.getEvent().getData().get("protectionKey").toString();
+		printLogger.info("ecryptionPin", ecryptionPin, "", "");		
 		String decodedCrdential = cryptoCoreUtil.decrypt(credential);
 		Map<String, String> proofMap = new HashMap<String, String>();
 		proofMap = (Map<String, String>) eventModel.getEvent().getData().get("proof");
