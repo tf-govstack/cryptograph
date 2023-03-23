@@ -1,4 +1,4 @@
-# Print
+## Print
 A reference project to use mosip credential service over websub and print a digital card.
 
 ## Get started
